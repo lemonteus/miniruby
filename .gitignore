@@ -1,3 +1,6 @@
+# Compiled interpreter
+./mrbi
+
 # Compiled class file
 *.class
 
