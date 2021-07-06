@@ -1,4 +1,4 @@
-package miniruby.lexical;
+package lexical;
 
 public class LexicalException extends RuntimeException {
 

@@ -1,9 +1,9 @@
-package miniruby.syntatic;
+package syntatic;
 
-import miniruby.interpreter.command.Command;
-import miniruby.lexical.Lexeme;
-import miniruby.lexical.LexicalAnalysis;
-import miniruby.lexical.TokenType;
+import interpreter.command.Command;
+import lexical.Lexeme;
+import lexical.LexicalAnalysis;
+import lexical.TokenType;
 
 public class SyntaticAnalysis {
 
@@ -16,18 +16,21 @@ public class SyntaticAnalysis {
     }
 
     public Command start() {
-        return null;
+        Command cmd = procCode();
+        eat(TokenType.END_OF_FILE);
+
+        return cmd;
     }
 
     private void advance() {
-        // System.out.println("Advanced (\"" + current.token + "\", " +
-        //     current.type + ")");
+        System.out.println("Advanced (\"" + current.token + "\", " +
+            current.type + ")");
         current = lex.nextToken();
     }
 
     private void eat(TokenType type) {
-        // System.out.println("Expected (..., " + type + "), found (\"" + 
-        //     current.token + "\", " + current.type + ")");
+        System.out.println("Expected (..., " + type + "), found (\"" + 
+             current.token + "\", " + current.type + ")");
         if (type == current.type) {
             current = lex.nextToken();
         } else {
@@ -53,5 +56,89 @@ public class SyntaticAnalysis {
 
         System.exit(1);
     }
+
+    private void procCode() { 
+
+        
+
+    }
+
+private void procCmd() { 
+
+    
+
+}
+
+private void procIf() {  }
+
+private void procUnless() {  }
+
+private void procWhile() { 
+
+    eat(TokenType.WHILE);
+    procBoolExpr();
+    eat(TokenType.DO);
+    procCode();
+    eat(TokenType.END);
+
+}
+
+private void procUntil() { 
+
+    eat(TokenType.UNTIL);
+    procBoolExpr();
+    eat(TokenType.DO);
+    procCode();
+    eat(TokenType.END);
+}
+
+private void procFor() {  }
+
+private void procOutput() {  }
+
+private void procAssign() {  }
+
+private void procPost() { 
+
+
+}
+
+private void procBoolExpr() {  }
+
+private void procCmpExpr() {  }
+
+private void procExpr() {  }
+
+private void procArith() {  }
+
+private void procTerm() {  }
+
+private void procPower() {  }
+
+private void procFactor() { 
+
+    procConst();
+
+}
+
+private void procConst() { 
+
+
+
+}
+
+private void procInput() {  }
+
+private void procArray() {  }
+
+private void procAccess() {  }
+
+private void procFunction() {  }
+
+
+
+
+
+
 
 }

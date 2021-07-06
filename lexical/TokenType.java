@@ -1,4 +1,4 @@
-package miniruby.lexical;
+package lexical;
 
 public enum TokenType {
 

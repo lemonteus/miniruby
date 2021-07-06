@@ -1,9 +1,9 @@
-package miniruby.lexical;
+package lexical;
 
 public class Lexeme {
 
-    TokenType type;
-    String token;
+    public TokenType type;
+    public String token;
 
     public Lexeme (String token, TokenType type)
     {
@@ -11,11 +11,11 @@ public class Lexeme {
         this.token = token;
     }
 
-    public Lexeme ()
+    /*public Lexeme ()
     {
         this.token = "";
         this.type = TokenType.END_OF_FILE;
-    }
+    }*/
 
     public String str() 
     {
