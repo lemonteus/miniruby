@@ -2,8 +2,7 @@ import lexical.Lexeme;
 import lexical.LexicalAnalysis;
 import lexical.TokenType;
 
-//TESTE 123
-//test
+//test colaborador
 
 public class mrbi {
 
