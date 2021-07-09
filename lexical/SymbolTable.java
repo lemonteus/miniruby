@@ -19,9 +19,9 @@ public class SymbolTable {
         // OPERATORS
         st.put("==", TokenType.EQUALS);
         st.put("!=", TokenType.NOT_EQUALS);
-        st.put("<", TokenType.LOWER);
-        st.put(">", TokenType.GREATER);
-        st.put("<=", TokenType.LOWER_EQ);
+        st.put("<", TokenType.LESS_THAN);
+        st.put(">", TokenType.GREATER_THAN);
+        st.put("<=", TokenType.LESS_EQ);
         st.put(">=", TokenType.GREATER_EQ);
         st.put("===", TokenType.CONTAINS);
         st.put("..", TokenType.RANGE_WITH);

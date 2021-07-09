@@ -16,9 +16,9 @@ public enum TokenType {
     // OPERATORS
     EQUALS,        // ==
     NOT_EQUALS,    // !=
-    LOWER,         // <
-    GREATER,       // >
-    LOWER_EQ,      // <=
+    LESS_THAN,         // <
+    GREATER_THAN,       // >
+    LESS_EQ,      // <=
     GREATER_EQ,    // >=
     CONTAINS,      // ===
     RANGE_WITH,    // ..
