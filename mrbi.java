@@ -2,6 +2,8 @@ import lexical.Lexeme;
 import lexical.LexicalAnalysis;
 import lexical.TokenType;
 
+//test colaborador
+
 public class mrbi {
 
     private static boolean checkType(TokenType type) {
