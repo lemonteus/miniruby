@@ -59,19 +59,109 @@ public class SyntaticAnalysis {
 
     private void procCode() { 
 
-        
+        procCmd();
+        while (current.type == TokenType.ID || 
+               current.type == TokenType.PUTS || 
+               current.type == TokenType.GETS || 
+               current.type == TokenType.IF ||
+               current.type == TokenType.UNLESS ||
+               current.type == TokenType.WHILE || 
+               current.type == TokenType.UNTIL ||   
+               current.type == TokenType.FOR) {
+
+            procCmd();
+
+            } 
 
     }
 
 private void procCmd() { 
 
-    
+    switch (current.type)
+    {
+        case IF:
+            procIf();
+            break;
+        
+        case UNLESS:
+            procUnless();
+            break;
+        
+        case WHILE:
+            procWhile();
+            break;
+        
+        case UNTIL:
+            procUntil();
+            break;
+        
+        case FOR:
+            procFor();
+            break;
 
+        case PUTS:
+        case PRINT:
+            procOutput();
+            break;
+        
+        case ID:
+            procAssign();
+            break;
+
+        default:
+            showError();
+    }
 }
 
-private void procIf() {  }
+private void procIf() { 
 
-private void procUnless() {  }
+    eat(TokenType.IF);
+    procBoolExpr();
+
+    if(current.type == TokenType.THEN)
+        eat(TokenType.THEN);
+
+    procCode();
+
+    if (current.type == TokenType.ELSIF)
+    {
+        eat(TokenType.ELSIF);
+        procBoolExpr();
+
+        if(current.type == TokenType.THEN)
+            eat(TokenType.THEN);
+
+        procCode();
+    }
+
+    if (current.type == TokenType.ELSE)
+    {   advance();
+        procCode();
+    }
+
+    eat(TokenType.END);
+
+ }
+
+private void procUnless() { 
+
+    eat(TokenType.UNLESS);
+
+    procBoolExpr();
+
+    if (current.type == TokenType.THEN)
+        eat(TokenType.THEN);
+
+    procCode();
+
+    if (current.type == TokenType.ELSE)
+    {
+        eat(TokenType.ELSE);
+        procCode();
+    }
+
+    eat(TokenType.END);
+ }
 
 private void procWhile() { 
 
@@ -92,48 +182,339 @@ private void procUntil() {
     eat(TokenType.END);
 }
 
-private void procFor() {  }
+private void procFor() { 
 
-private void procOutput() {  }
+    eat(TokenType.FOR);
+    
+    eat(TokenType.ID);
 
-private void procAssign() {  }
+    eat(TokenType.IN);
+    
+    procExpr();
 
-private void procPost() { 
+    if (current.type == TokenType.DO)
+        eat(TokenType.DO);
+    
+    procCode();
+
+    eat(TokenType.END);
+ }
+
+private void procOutput() { 
+
+    procExpr();
 
 
 }
 
-private void procBoolExpr() {  }
+private void procAssign() { 
 
-private void procCmpExpr() {  }
+    procAccess();
 
-private void procExpr() {  }
+    int accessCount = 0;
 
-private void procArith() {  }
+    while (current.type == TokenType.COMMA)
+    {
+        eat(TokenType.COMMA);
+        procAccess();
+        accessCount++;
+    }
 
-private void procTerm() {  }
+    eat(TokenType.EQUALS);
 
-private void procPower() {  }
+    procExpr();
+
+    while (accessCount != 0)
+    {   
+        if (current.type == TokenType.COMMA)
+        {
+            eat(TokenType.COMMA);
+            procExpr();
+            accessCount--;
+        } else {
+            showError();
+        }
+    }
+
+    if (current.type == TokenType.IF ||
+        current.type == TokenType.UNLESS)
+    {
+        procPost();
+    }
+
+    eat(TokenType.SEMI_COLON);
+
+ }
+
+private void procPost() { 
+
+    if (current.type == TokenType.IF)
+    {
+        eat(TokenType.IF);
+        procBoolExpr();
+    } else if (current.type == TokenType.UNLESS)
+    {
+        eat(TokenType.UNLESS);
+        procBoolExpr();
+    } else {
+        showError();
+    }
+}
+
+private void procBoolExpr() { 
+
+    if (current.type == TokenType.NOT)
+    {
+        eat(TokenType.NOT);
+    }
+
+    procCmpExpr();
+
+    if (current.type == TokenType.AND)
+    {
+        eat(TokenType.AND);
+        procBoolExpr();
+
+    } else if (current.type == TokenType.OR)
+    {
+        eat(TokenType.OR);
+        procBoolExpr();
+    }
+
+
+
+ }
+
+private void procCmpExpr() { 
+
+    procExpr();
+
+    switch (current.type) {
+        
+        case EQUALS:
+            eat(TokenType.EQUALS);
+            break;
+
+        case NOT_EQUALS:
+            eat(TokenType.NOT_EQUALS);
+            break;
+            
+        case LESS_THAN:
+            eat(TokenType.LESS_THAN);
+            break;
+        
+        case GREATER_THAN:
+            eat(TokenType.GREATER_THAN);
+            break;
+        
+        case GREATER_EQ:
+            eat(TokenType.GREATER_EQ);
+            break;
+
+        case LESS_EQ:
+            eat(TokenType.LESS_EQ);
+            break;
+        
+        case CONTAINS:
+            eat(TokenType.CONTAINS);
+            break;
+    }
+
+    procExpr();
+}
+
+private void procExpr() { 
+
+    procArith();
+
+    if (current.type == TokenType.RANGE_WITH || 
+        current.type == TokenType.RANGE_WITHOUT)
+    {
+        if (current.type == TokenType.RANGE_WITH)
+        {
+            eat(TokenType.RANGE_WITH); //TODO: ao implementar logica nao sera mais necessario implementar o eat
+        }
+
+        if (current.type == TokenType.RANGE_WITHOUT)
+        {
+            eat(TokenType.RANGE_WITHOUT); //TODO: ao implementar logica nao sera mais necessario implementar o eat
+        }
+
+        procArith();
+    }
+
+ }
+
+    private void procArith() { 
+
+        procTerm();
+        
+        while (current.type == TokenType.ADD || current.type == TokenType.SUB)
+        {
+            advance();
+            procTerm();
+        }
+
+    }
+
+private void procTerm() { 
+
+    procPower();
+
+    while (current.type == TokenType.MUL || current.type == TokenType.DIV || current.type == TokenType.MOD) 
+    {
+        advance();
+        procPower();
+    }
+}
+
+private void procPower() { 
+
+    procFactor();
+
+    while (current.type == TokenType.EXP)
+    {
+        advance();
+        procFactor();
+    }
+
+}
 
 private void procFactor() { 
 
-    procConst();
+    boolean neg = false;
 
+    if (current.type == TokenType.ADD)
+    {
+        advance();
+    }
+    else if (current.type == TokenType.SUB)
+    {
+        neg = true;
+        advance();
+    }
+
+    switch (current.type) {
+        
+        case INTEGER:
+        case STRING:
+        case OPEN_BRA:
+            procConst();
+            break;
+        
+        case GETS:
+        case RAND:
+            procInput();
+            break;
+
+        case ID:
+        case OPEN_PAR:
+            procAccess();
+            break;
+    }
 }
 
 private void procConst() { 
 
+    switch (current.type) {
+    
+        case INTEGER:
+            eat(TokenType.INTEGER);
+            break;
 
+        case STRING:
+            eat(TokenType.STRING);
+            break;
 
+        case OPEN_BRA:
+            procArray();
+            break;
+        
+        default:
+            showError();
+            break;
+    }
 }
 
-private void procInput() {  }
+private void procInput() { 
 
-private void procArray() {  }
+    switch (current.type) {
 
-private void procAccess() {  }
+        case GETS:
+            eat(TokenType.GETS);
+            break;
 
-private void procFunction() {  }
+        case RAND:
+            eat(TokenType.RAND);
+            break;
+    }
+}  
+
+private void procArray() { 
+    
+    eat(TokenType.OPEN_BRA);
+    
+    if(current.type != TokenType.CLOSE_BRA) 
+    {
+        procExpr();
+
+        while (current.type == TokenType.COMMA)
+        {
+            advance();
+            procExpr();
+        }
+
+    } else {
+        eat(TokenType.CLOSE_BRA);
+    }   
+}
+
+private void procAccess() { 
+
+    switch (current.type) {
+
+        case ID:
+            eat(TokenType.ID);
+            break;
+
+        case OPEN_PAR:
+            advance();
+            procExpr();
+            eat(TokenType.CLOSE_PAR);
+            break;
+    }
+
+    if (current.type == TokenType.OPEN_BRA)
+    {
+        advance();
+        procExpr();
+        eat(TokenType.CLOSE_BRA);
+    }
+}
+
+private void procFunction() { 
+
+    eat(TokenType.DOT);
+
+    switch (current.type) {
+
+        case LENGTH:
+            advance();
+            break;
+        
+        case TO_INT:
+            advance();
+            break;
+
+        case TO_STR:
+            advance();
+            break;
+
+        default:
+            showError();
+            break;
+    }
+}
 
 
 
