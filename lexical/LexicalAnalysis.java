@@ -105,6 +105,8 @@ public class LexicalAnalysis implements AutoCloseable {
                         lex.token += (char) c;
                         state = 10;
                     } else if (c == '\'') {
+                        lex.token += (char) c;
+                        lex.type = TokenType.STRING;
                         state = 11;
                     } 
                     else if (c == -1)
@@ -131,6 +133,7 @@ public class LexicalAnalysis implements AutoCloseable {
                         ungetc(c);
                         state = 12;
                     } else if (c == '.') {
+                        lex.token += (char) c;
                         state = 4;
                     }
                     break;
@@ -139,6 +142,7 @@ public class LexicalAnalysis implements AutoCloseable {
                         ungetc(c);
                         state = 12;
                     } else if (c == '.') {
+                        lex.token += (char) c;
                         state = 12;
                     }
                     break;
@@ -147,6 +151,7 @@ public class LexicalAnalysis implements AutoCloseable {
                         ungetc(c);
                         state = 12;
                     } else if (c == '=') {
+                        lex.token += (char) c;
                         state = 6;
                     }
                     break;
@@ -155,6 +160,7 @@ public class LexicalAnalysis implements AutoCloseable {
                         ungetc(c);
                         state = 12;
                     } else if (c == '=') {
+                        lex.token += (char) c;
                         state = 12;
                     }
                     break;
@@ -168,6 +174,7 @@ public class LexicalAnalysis implements AutoCloseable {
                     break;
                 case 8:
                     if (c == '=') {
+                        lex.token += (char) c;
                         state = 12;
                     }
                     break;
@@ -192,8 +199,10 @@ public class LexicalAnalysis implements AutoCloseable {
                     break;
                 case 11:
                     if (c != '\'') {
+                        lex.token += (char) c;
                         state = 11;
                     } else {
+                        lex.token += (char) c;
                         state = 13;
                     }
                     break;
