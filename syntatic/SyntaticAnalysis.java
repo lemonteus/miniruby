@@ -15,11 +15,12 @@ public class SyntaticAnalysis {
         this.current = lex.nextToken();
     }
 
-    public Command start() {
-        Command cmd = procCode();
+    public void start() {
+        //Command cmd = 
+        procCode();
         eat(TokenType.END_OF_FILE);
 
-        return cmd;
+        //return cmd;
     }
 
     private void advance() {
@@ -62,6 +63,8 @@ public class SyntaticAnalysis {
         procCmd();
         while (current.type == TokenType.ID || 
                current.type == TokenType.PUTS || 
+               current.type == TokenType.PRINT ||
+               current.type == TokenType.RAND ||  
                current.type == TokenType.GETS || 
                current.type == TokenType.IF ||
                current.type == TokenType.UNLESS ||
@@ -202,8 +205,34 @@ private void procFor() {
 
 private void procOutput() { 
 
-    procExpr();
+    if (current.type == TokenType.PUTS)
+    {
+        advance();
 
+    } else if (current.type == TokenType.PRINT)
+    {
+        advance();
+
+    } else {
+
+        showError();
+    }
+    
+    if (current.type == TokenType.IF || current.type == TokenType.UNLESS)
+    {   
+        procPost();
+    }
+    else if (current.type != TokenType.SEMI_COLON)
+    {
+        procExpr();
+       
+        if (current.type == TokenType.IF || current.type == TokenType.UNLESS)
+        {   
+            procPost();
+        }
+    }
+
+    eat(TokenType.SEMI_COLON);
 
 }
 
@@ -220,7 +249,7 @@ private void procAssign() {
         accessCount++;
     }
 
-    eat(TokenType.EQUALS);
+    eat(TokenType.ASSIGN);
 
     procExpr();
 
@@ -231,6 +260,7 @@ private void procAssign() {
             eat(TokenType.COMMA);
             procExpr();
             accessCount--;
+
         } else {
             showError();
         }
@@ -412,6 +442,16 @@ private void procFactor() {
             procAccess();
             break;
     }
+
+    //must verify if next token isn't interval operand
+    if (current.type == TokenType.RANGE_WITH || current.type == TokenType.RANGE_WITHOUT)
+    {
+        
+    }
+    else if (current.type == TokenType.DOT)
+    {
+        procFunction();
+    }
 }
 
 private void procConst() { 
@@ -463,10 +503,8 @@ private void procArray() {
             advance();
             procExpr();
         }
-
-    } else {
-        eat(TokenType.CLOSE_BRA);
-    }   
+    }
+    eat(TokenType.CLOSE_BRA);
 }
 
 private void procAccess() { 
