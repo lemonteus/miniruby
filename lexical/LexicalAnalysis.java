@@ -105,7 +105,6 @@ public class LexicalAnalysis implements AutoCloseable {
                         lex.token += (char) c;
                         state = 10;
                     } else if (c == '\'') {
-                        lex.token += (char) c;
                         lex.type = TokenType.STRING;
                         state = 11;
                     } 
@@ -202,7 +201,6 @@ public class LexicalAnalysis implements AutoCloseable {
                         lex.token += (char) c;
                         state = 11;
                     } else {
-                        lex.token += (char) c;
                         state = 13;
                     }
                     break;
