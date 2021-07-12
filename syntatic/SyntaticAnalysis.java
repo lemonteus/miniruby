@@ -1,9 +1,15 @@
 package syntatic;
 
-import interpreter.command.Command;
+import java.util.List;
+import java.util.ArrayList;
+
 import lexical.Lexeme;
 import lexical.LexicalAnalysis;
 import lexical.TokenType;
+import interpreter.command.*;
+import interpreter.expr.*;
+import interpreter.value.*;
+
 
 public class SyntaticAnalysis {
 
@@ -15,23 +21,22 @@ public class SyntaticAnalysis {
         this.current = lex.nextToken();
     }
 
-    public void start() {
-        //Command cmd = 
-        procCode();
+    public Command start() {
+        Command cmd = (Command) procCode();
         eat(TokenType.END_OF_FILE);
 
-        //return cmd;
+        return cmd;
     }
 
     private void advance() {
-        System.out.println("Advanced (\"" + current.token + "\", " +
-            current.type + ")");
+        //System.out.println("Advanced (\"" + current.token + "\", " +
+        //    current.type + ")");
         current = lex.nextToken();
     }
 
     private void eat(TokenType type) {
-        System.out.println("Expected (..., " + type + "), found (\"" + 
-             current.token + "\", " + current.type + ")");
+        //System.out.println("Expected (..., " + type + "), found (\"" + 
+        //     current.token + "\", " + current.type + ")");
         if (type == current.type) {
             current = lex.nextToken();
         } else {
@@ -58,9 +63,13 @@ public class SyntaticAnalysis {
         System.exit(1);
     }
 
-    private void procCode() { 
+    private BlocksCommand procCode() { 
 
-        procCmd();
+        int line = lex.getLine();
+
+        List<Command> auxList = new ArrayList<Command>();
+        auxList.add(procCmd());
+
         while (current.type == TokenType.ID || 
                current.type == TokenType.PUTS || 
                current.type == TokenType.PRINT ||
@@ -72,13 +81,15 @@ public class SyntaticAnalysis {
                current.type == TokenType.UNTIL ||   
                current.type == TokenType.FOR) {
 
-            procCmd();
+            auxList.add(procCmd());
+        } 
 
-            } 
-
+        return new BlocksCommand(line, auxList);
     }
 
-private void procCmd() { 
+private Command procCmd() { 
+
+    Command auxCommand = null;
 
     switch (current.type)
     {
@@ -104,8 +115,8 @@ private void procCmd() {
 
         case PUTS:
         case PRINT:
-            procOutput();
-            break;
+            Command c = (Command) procOutput();
+            return c;
         
         case ID:
             procAssign();
@@ -114,6 +125,8 @@ private void procCmd() {
         default:
             showError();
     }
+
+    return auxCommand;
 }
 
 private void procIf() { 
@@ -169,20 +182,26 @@ private void procUnless() {
 private void procWhile() { 
 
     eat(TokenType.WHILE);
-    procBoolExpr();
-    eat(TokenType.DO);
-    procCode();
+    int line = lex.getLine();
+    
+    eat(TokenType.DO);    
     eat(TokenType.END);
 
 }
+
+//private UntilCommand procUntil() {
 
 private void procUntil() { 
 
     eat(TokenType.UNTIL);
     procBoolExpr();
     eat(TokenType.DO);
+    //BoolExpr cond = procBoolExpr();
     procCode();
+    //Command cmds = procCode();
     eat(TokenType.END);
+
+    //return new UntilCommand(line, cond, cmds);
 }
 
 private void procFor() { 
@@ -203,36 +222,50 @@ private void procFor() {
     eat(TokenType.END);
  }
 
-private void procOutput() { 
+private OutputCommand procOutput() { 
+
+    OutputOp auxOp = null;
+    int line;
+    OutputCommand auxCommand = null;
 
     if (current.type == TokenType.PUTS)
     {
         advance();
+        auxOp = OutputOp.PutsOp;
+        line = lex.getLine();
+
 
     } else if (current.type == TokenType.PRINT)
     {
+        line = lex.getLine();
+        auxOp = OutputOp.PrintOp;
         advance();
 
     } else {
 
+        line = lex.getLine();
         showError();
     }
     
     if (current.type == TokenType.IF || current.type == TokenType.UNLESS)
     {   
         procPost();
+        return new OutputCommand(line, auxOp);
     }
     else if (current.type != TokenType.SEMI_COLON)
     {
-        procExpr();
+        Expr auxExpr = procExpr();
        
         if (current.type == TokenType.IF || current.type == TokenType.UNLESS)
         {   
             procPost();
+            return new OutputCommand(line, auxOp, auxExpr);
         }
     }
 
     eat(TokenType.SEMI_COLON);
+
+    return auxCommand;
 
 }
 
@@ -353,9 +386,10 @@ private void procCmpExpr() {
     procExpr();
 }
 
-private void procExpr() { 
+private Expr procExpr() { 
 
-    procArith();
+    //TODO: alterar para BinaryExpr
+    Expr left = procArith();
 
     if (current.type == TokenType.RANGE_WITH || 
         current.type == TokenType.RANGE_WITHOUT)
@@ -370,49 +404,62 @@ private void procExpr() {
             eat(TokenType.RANGE_WITHOUT); //TODO: ao implementar logica nao sera mais necessario implementar o eat
         }
 
-        procArith();
+        Expr right = procArith();
     }
+
+    //TODO: resolver isso, só ta retornando o termo esquerdo
+    return left;
 
  }
 
-    private void procArith() { 
+    private Expr procArith() { 
 
-        procTerm();
+        //TODO: alterar para BinaryExpr
+        Expr expr = procTerm();
         
         while (current.type == TokenType.ADD || current.type == TokenType.SUB)
         {
             advance();
-            procTerm();
+            Expr expr2 = procTerm();
         }
+
+        //TODO: resolver isso, só ta retornando o termo esquerdo
+        return expr;
 
     }
 
-private void procTerm() { 
+private Expr procTerm() { 
 
-    procPower();
+    Expr expr = procPower();
 
     while (current.type == TokenType.MUL || current.type == TokenType.DIV || current.type == TokenType.MOD) 
     {
         advance();
-        procPower();
+        Expr expr2 = procPower();
     }
+
+    //TODO: resolver isso, só ta retornando o termo esquerdo
+    return expr;
 }
 
-private void procPower() { 
+private Expr procPower() { 
 
-    procFactor();
+    Expr expr = procFactor();
 
     while (current.type == TokenType.EXP)
     {
         advance();
-        procFactor();
+        Expr expr2 = procFactor();
     }
-
+    
+    //TODO: resolver isso, só ta retornando o termo esquerdo
+    return expr;
 }
 
-private void procFactor() { 
+private Expr procFactor() { 
 
     boolean neg = false;
+    Expr expr = null;
 
     if (current.type == TokenType.ADD)
     {
@@ -429,8 +476,9 @@ private void procFactor() {
         case INTEGER:
         case STRING:
         case OPEN_BRA:
-            procConst();
-            break;
+            expr = (Expr) procConst();
+            //TODO: implement factor
+            return expr;
         
         case GETS:
         case RAND:
@@ -452,16 +500,35 @@ private void procFactor() {
     {
         procFunction();
     }
+
+    return (Expr) expr;
+
 }
 
-private void procConst() { 
+private ConstExpr procConst() { 
+
+    ConstExpr cExpr = null;
+    String auxS = null;
+    int line = lex.getLine();
 
     switch (current.type) {
     
         case INTEGER:
+            auxS = current.token;
+            
             eat(TokenType.INTEGER);
-            break;
+            
+            IntegerValue number;
 
+            try {
+                number = new IntegerValue(Integer.parseInt(auxS));
+            } catch (Exception e)
+            {
+                number = new IntegerValue(0);
+            }
+
+            return new ConstExpr(line, number);
+            
         case STRING:
             eat(TokenType.STRING);
             break;
@@ -474,6 +541,8 @@ private void procConst() {
             showError();
             break;
     }
+
+    return cExpr;
 }
 
 private void procInput() { 
@@ -553,11 +622,5 @@ private void procFunction() {
             break;
     }
 }
-
-
-
-
-
-
 
 }
