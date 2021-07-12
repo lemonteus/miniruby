@@ -1,15 +1,21 @@
 package interpreter.expr;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.Math;
+import java.util.Scanner;
+import java.util.Random;
 
 import interpreter.value.*;
 
 public class InputExpr extends Expr {
 
     private InputOp op;
+
+    private static Scanner s;
+    private static Random r;
+
+    static {
+        s = new Scanner (System.in);
+        r = new Random();
+    }
 
     public InputExpr(int line, InputOp op)
     {
@@ -19,35 +25,35 @@ public class InputExpr extends Expr {
 
     public Value<?> expr()
     {      
-        switch (op)
+        switch (this.op)
         {
-            case GetsOp:
-                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                
+            case GetsOp:             
                 try {
 
-                    String auxString = reader.readLine();
+                    String auxString = String.valueOf(s.nextLine());
                     StringValue returnSV = new StringValue(auxString);
-                    return ((Value<?>) returnSV);
+                    s.close();
+                    return (returnSV);
 
-                } catch (IOException e)
+                } catch (Exception e)
                 {
                     System.out.println(e.getMessage());
                     System.exit(0);
                     //TODO: Make this better
                 }
-
+                
                 break;
 
             case RandOp:
-                int auxInt = (int) Math.random() * (Integer.MAX_VALUE - Integer.MIN_VALUE + 1) + Integer.MIN_VALUE;
+                int auxInt = (int) r.nextInt((Integer.MAX_VALUE));
                 IntegerValue returnIV = new IntegerValue(auxInt);
-                return ((Value<?>) returnIV);
+                return (returnIV);
 
             default:
                 break;
         }
-    
+        
+
         //TODO: Erro aconteceu aqui, fazer print do log e tals
         return null;
     }

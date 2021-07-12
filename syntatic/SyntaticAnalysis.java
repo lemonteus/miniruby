@@ -484,8 +484,8 @@ private Expr procFactor() {
         
         case GETS:
         case RAND:
-            procInput();
-            break;
+            expr = (Expr) procInput();
+            return expr;
 
         case ID:
         case OPEN_PAR:
@@ -551,18 +551,29 @@ private ConstExpr procConst() {
     return cExpr;
 }
 
-private void procInput() { 
+private InputExpr procInput() { 
+
+    InputExpr auxIE = null;
+    int line = lex.getLine();
 
     switch (current.type) {
 
         case GETS:
             eat(TokenType.GETS);
-            break;
+            return new InputExpr(line, InputOp.GetsOp);
 
         case RAND:
             eat(TokenType.RAND);
+            line = lex.getLine();
+            return new InputExpr(line, InputOp.RandOp);
+        
+        default:
+            line = -120;
             break;
     }
+
+    return auxIE;
+    
 }  
 
 private ArrayExpr procArray() { 

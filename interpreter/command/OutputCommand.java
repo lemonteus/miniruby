@@ -25,8 +25,7 @@ public class OutputCommand extends Command {
         switch (this.op) {
 
             case PutsOp:
-                if (expr instanceof ConstExpr)
-                System.out.println(((ConstExpr) expr).expr().toString());
+                System.out.println((expr).expr().toString());
                 break;
             
             case PrintOp:
