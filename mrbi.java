@@ -3,7 +3,7 @@ import lexical.LexicalAnalysis;
 import lexical.TokenType;
 import syntatic.SyntaticAnalysis;
 
-//test colaborador
+//test colaborador.
 
 public class mrbi {
 
