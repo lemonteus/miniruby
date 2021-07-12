@@ -4,7 +4,7 @@ import lexical.TokenType;
 import syntatic.SyntaticAnalysis;
 import interpreter.command.*;
 
-//test colaborador
+//test colaborador.
 
 public class mrbi {
 
