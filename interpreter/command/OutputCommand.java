@@ -26,11 +26,11 @@ public class OutputCommand extends Command {
 
             case PutsOp:
                 if (expr instanceof ConstExpr)
-                System.out.println(expr.toString());
+                System.out.println(((ConstExpr) expr).expr().toString());
                 break;
             
             case PrintOp:
-                System.out.print(expr);
+                System.out.print(expr.expr());
                 break;
         }
        

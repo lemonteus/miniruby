@@ -2,6 +2,7 @@ package syntatic;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import lexical.Lexeme;
 import lexical.LexicalAnalysis;
@@ -258,9 +259,10 @@ private OutputCommand procOutput() {
        
         if (current.type == TokenType.IF || current.type == TokenType.UNLESS)
         {   
-            procPost();
-            return new OutputCommand(line, auxOp, auxExpr);
+            procPost();           
         }
+        eat(TokenType.SEMI_COLON);
+        return new OutputCommand(line, auxOp, auxExpr);
     }
 
     eat(TokenType.SEMI_COLON);
@@ -515,7 +517,7 @@ private ConstExpr procConst() {
     
         case INTEGER:
             auxS = current.token;
-            
+    
             eat(TokenType.INTEGER);
             
             IntegerValue number;
@@ -530,13 +532,17 @@ private ConstExpr procConst() {
             return new ConstExpr(line, number);
             
         case STRING:
+            auxS = current.token;
             eat(TokenType.STRING);
-            break;
+
+            StringValue string = new StringValue(auxS);
+
+            return new ConstExpr(line, string);
 
         case OPEN_BRA:
-            procArray();
-            break;
-        
+            ArrayExpr array = procArray();
+            return new ConstExpr(line, array.expr());
+            
         default:
             showError();
             break;
@@ -559,21 +565,27 @@ private void procInput() {
     }
 }  
 
-private void procArray() { 
+private ArrayExpr procArray() { 
+
+    ArrayList<Expr> auxVector = new ArrayList<Expr>();
+    int line = lex.getLine();
     
     eat(TokenType.OPEN_BRA);
     
     if(current.type != TokenType.CLOSE_BRA) 
     {
-        procExpr();
+        auxVector.add(procExpr());
 
         while (current.type == TokenType.COMMA)
         {
             advance();
-            procExpr();
+            auxVector.add(procExpr());
         }
     }
+
     eat(TokenType.CLOSE_BRA);
+    return new ArrayExpr(line, auxVector);
+
 }
 
 private void procAccess() { 
