@@ -7,11 +7,11 @@ Instruções de compilação:
 
 Digite o seguinte comando no terminal:
 
-``
+```
 javac mrbi.java
-``
+```
 Para testar a execução com o programa teste, use o seguinte comando:
 
-``
+```
 java mrbi programateste.mrb
-``
+```
