@@ -1,5 +1,5 @@
 # miniruby
-Interpretador de miniRuby - Trabalho Prático da disciplina de Linguages de Programação do CEFET-MG, ministrada pelo professor Andrei Rimsa Alvares.
+Interpretador de miniRuby - Trabalho Prático da disciplina de Linguagens de Programação do CEFET-MG, ministrada pelo professor Andrei Rimsa Alvares.
 
 Autor: Mateus Lemos de Freitas Barbosa
 
