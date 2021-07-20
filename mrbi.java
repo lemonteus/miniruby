@@ -1,18 +1,21 @@
-import lexical.Lexeme;
 import lexical.LexicalAnalysis;
-import lexical.TokenType;
 import syntatic.SyntaticAnalysis;
 import interpreter.command.*;
+import interpreter.util.*;
 
-//test colaborador.
+//Interpretador miniruby - Feito em Java
+//Aluno: Mateus Lemos de Freitas Barbosa
+//Disciplina de Linguagens de Programação, ministrada pelo professor Andrei,
+//no semestre 2021.1 do curso de Engenharia de Computação.
 
 public class mrbi {
 
-    private static boolean checkType(TokenType type) {
+    /*private static boolean checkType(TokenType type) {
         return !(type == TokenType.END_OF_FILE ||
                  type == TokenType.INVALID_TOKEN ||
                  type == TokenType.UNEXPECTED_EOF);
-    }
+    }*/
+
     public static void main(String[] args) {
         if (args.length != 1) {
             System.out.println("Usage: java mrbi [miniRuby file]");
@@ -27,7 +30,6 @@ public class mrbi {
             c.execute();
             
             // O código a seguir é usado apenas para testar o analisador léxico.
-            // TODO: depois de pronto, comentar o código abaixo.
             /*Lexeme lex = l.nextToken();
             while (checkType(lex.type)) {
                 System.out.printf("(\"%s\", %s)\n", lex.token, lex.type);
@@ -47,7 +49,7 @@ public class mrbi {
             }*/
             
         } catch (Exception e) {
-            System.err.println("Internal error: " + e.getMessage());
+            Execution.stop(0);
         }
     }
 }

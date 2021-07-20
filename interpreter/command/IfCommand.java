@@ -15,6 +15,14 @@ public class IfCommand extends Command {
         this.thenCmds = thenCmds;
     }
 
+    public IfCommand (int line, BoolExpr cond, Command thenCmds, Command elseCmds)
+    {
+        super(line);
+        this.cond = cond;
+        this.thenCmds = thenCmds;
+        this.elseCmds = elseCmds;
+    }
+
     public void setElseCommands (Command elseCmds)
     {
         this.elseCmds = elseCmds;

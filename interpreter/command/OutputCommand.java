@@ -25,11 +25,17 @@ public class OutputCommand extends Command {
         switch (this.op) {
 
             case PutsOp:
-                System.out.println((expr).expr().toString());
+                if(expr != null)
+                    System.out.println((expr).expr().toString());
+                else
+                    System.out.println();
                 break;
             
             case PrintOp:
-                System.out.print(expr.expr());
+                if(expr != null)
+                    System.out.print(expr.expr().toString());
+                else
+                    System.out.println();
                 break;
         }
        

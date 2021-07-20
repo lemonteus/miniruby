@@ -4,6 +4,7 @@ import java.util.Scanner;
 import java.util.Random;
 
 import interpreter.value.*;
+import interpreter.util.*;
 
 public class InputExpr extends Expr {
 
@@ -32,14 +33,11 @@ public class InputExpr extends Expr {
 
                     String auxString = String.valueOf(s.nextLine());
                     StringValue returnSV = new StringValue(auxString);
-                    s.close();
                     return (returnSV);
 
                 } catch (Exception e)
                 {
-                    System.out.println(e.getMessage());
-                    System.exit(0);
-                    //TODO: Make this better
+                    Execution.stop(this.getLine());
                 }
                 
                 break;
@@ -54,7 +52,7 @@ public class InputExpr extends Expr {
         }
         
 
-        //TODO: Erro aconteceu aqui, fazer print do log e tals
+        Execution.stop(this.getLine());
         return null;
     }
     

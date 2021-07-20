@@ -168,6 +168,7 @@ public class LexicalAnalysis implements AutoCloseable {
                         ungetc(c);
                         state = 12;
                     } else if (c == '*') {
+                        lex.token += (char) c;
                         state = 12;
                     }
                     break;

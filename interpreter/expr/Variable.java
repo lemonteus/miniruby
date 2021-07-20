@@ -2,9 +2,9 @@ package interpreter.expr;
 
 import interpreter.value.*;
 
-public class Variable extends SetExpr {
+import interpreter.util.Memory;
 
-    //TODO
+public class Variable extends SetExpr {
 
     private String name;
 
@@ -14,14 +14,19 @@ public class Variable extends SetExpr {
         this.name = name;
     }
 
+    public String getName()
+    {
+        return this.name;
+    }
+
     public Value<?> expr()
     {
-        return null;
+        return Memory.read(this.name);
     }
 
     public void setValue(Value<?> value)
     {
-        
+        Memory.write(this.name, value);
     }
     
 }

@@ -18,19 +18,24 @@ public class CompositeBoolExpr extends BoolExpr {
     {
         boolean exprValidation = false;
 
-        //TODO:consertar tratamento de erros, para todos os casos
-
         switch (op) {
 
             case And:
-                exprValidation = (left.expr() && right.expr());
+                if (right != null)
+                    exprValidation = (left.expr() && right.expr());
+                else
+                    exprValidation = left.expr();
                 break;
 
             case Or:
-                exprValidation = (left.expr() || right.expr());
+                if (right != null)
+                    exprValidation = (left.expr() || right.expr());
+                else
+                    exprValidation = left.expr();
                 break;
             
             default:
+                exprValidation = left.expr();
                 break;
                     
         }

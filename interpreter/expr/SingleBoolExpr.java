@@ -2,6 +2,8 @@ package interpreter.expr;
 
 import interpreter.value.*;
 
+import interpreter.util.*;
+
 import java.util.Vector;
 
 public class SingleBoolExpr extends BoolExpr {
@@ -23,44 +25,38 @@ public class SingleBoolExpr extends BoolExpr {
         Value<?> expr1 = left.expr();
         Value<?> expr2 = right.expr();
 
-        //TODO:consertar tratamento de erros, para todos os casos
-        //TODO: trocar returns por atribuição ao exprValidation
-
         boolean exprValidation = false;
 
         switch (op) {
             case EqualsOp:
-                if (expr1 instanceof IntegerValue && expr1 instanceof IntegerValue)
+                if (expr1 instanceof IntegerValue && expr2 instanceof IntegerValue)
                     return expr1.value() == expr2.value();
                 else if (expr1 instanceof StringValue && expr2 instanceof StringValue)
                     return expr1.value().equals(expr2.value());
                 else {
-                    
-                    System.out.println("ERRO: Operacao invalida");
-                    System.exit(1);
+                    Execution.stop(this.getLine());
                 }
                     break;
             case NotEqualsOp:
-                if (expr1 instanceof IntegerValue && expr1 instanceof IntegerValue)
+                if (expr1 instanceof IntegerValue && expr2 instanceof IntegerValue)
                     return expr1.value() != expr2.value();
                 else if (expr1 instanceof StringValue && expr2 instanceof StringValue)
                     return (!expr1.value().equals(expr2.value()));
                     break;
 
             case LowerThanOp:
-                if (expr1 instanceof IntegerValue && expr1 instanceof IntegerValue)
+                if (expr1 instanceof IntegerValue && expr2 instanceof IntegerValue)
                     return (((int) expr1.value()) < ((int) expr2.value()));
                     break;
                 
             case LowerEqualOp:
-                if (expr1 instanceof IntegerValue && expr1 instanceof IntegerValue)
+                if (expr1 instanceof IntegerValue && expr2 instanceof IntegerValue)
                     return (((int) expr1.value()) <= ((int) expr2.value()));
             case GreaterThanOp:
-                if (expr1 instanceof IntegerValue && expr1 instanceof IntegerValue)
+                if (expr1 instanceof IntegerValue && expr2 instanceof IntegerValue)
                     return (((int) expr1.value()) > ((int) expr2.value()));
-                    break;
             case GreaterEqualOp:
-                if (expr1 instanceof IntegerValue && expr1 instanceof IntegerValue)
+                if (expr1 instanceof IntegerValue && expr2 instanceof IntegerValue)
                     return (((int) expr1.value()) >= ((int) expr2.value()));
                     break;
             case ContainsOp:
@@ -94,7 +90,6 @@ public class SingleBoolExpr extends BoolExpr {
                     }
 
                 }
-
 
                 break;
         }

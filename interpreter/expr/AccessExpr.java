@@ -4,6 +4,8 @@ import java.util.Vector;
 
 import interpreter.value.*;
 
+import interpreter.util.*;
+
 public class AccessExpr extends SetExpr {
     
     private Expr base;
@@ -18,11 +20,12 @@ public class AccessExpr extends SetExpr {
 
     public Value<?> expr()
     {
-        Value<?> baseValue = base.expr();
+        Value<?> baseValue = this.base.expr();
         
         if (index == null)
         {
             return baseValue;
+
         } else {
 
             if (baseValue instanceof ArrayValue) {
@@ -54,8 +57,7 @@ public class AccessExpr extends SetExpr {
 
             }
 
-
-            //TODO: implementar aqui saida de erro
+            Execution.stop(this.getLine());
             return null;
 
         }
@@ -64,7 +66,7 @@ public class AccessExpr extends SetExpr {
     public void setValue (Value<?> value)
     {
         if (index == null)
-        {
+        {            
             if (base instanceof SetExpr)
             {
                 SetExpr auxSE = (SetExpr) base;

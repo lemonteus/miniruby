@@ -21,7 +21,9 @@ public class BlocksCommand extends Command {
 
         while(it.hasNext())
         {
-            it.next().execute();
+            Command c = it.next();
+            if (c != null)
+                c.execute();
         }
 
     }

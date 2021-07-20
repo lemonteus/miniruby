@@ -8,7 +8,7 @@ import interpreter.value.Value;
 
 public class Memory {
 
-    private static Map<String, Value<?> > memory = new HashMap<String, Value<?> >();
+    private static Map <String, Value<?>> memory = new HashMap<String, Value<?> >();
 
     public static Value<?> read(String name) {
         Value<?> value = memory.get(name);
