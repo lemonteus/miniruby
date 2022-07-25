@@ -3,7 +3,9 @@ Interpretador de miniRuby - Trabalho Prático da disciplina de Linguagens de Pro
 
 Autor: Mateus Lemos de Freitas Barbosa
 
-Instruções de compilação:
+Sobre: miniRuby é uma linguagem de programação inventada, criada a partir da linguagem Ruby. O objetivo desse projeto era construir um interpretador em Java que fosse capaz de interpretar e rodar qualquer programa codificado nessa linguagem, incluindo a análise sintática, léxica e simbólica. 
+
+## Instruções de compilação
 
 Digite o seguinte comando no terminal:
 
